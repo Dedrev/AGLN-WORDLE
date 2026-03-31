@@ -1,11 +1,11 @@
 
-def getScore(wordLentgh,attempts):
+def getScore(wordLentgh,attempts) -> int:
     '''
     Gibt den Score für das aktuelle Level raus
     '''
     return wordLentgh * 10 + ((5 - attempts) *5)
 
-def checkForRightLetter(word,letter):
+def checkForRightLetter(word: str,letter: str) -> bool:
     '''
     Überprüft ob der Buchstabe im Word vorhanden ist.
     '''
@@ -13,7 +13,7 @@ def checkForRightLetter(word,letter):
         return True
     return False
 
-def checkForRightPosition(word, letter, position):
+def checkForRightPosition(word: str, letter: str, position: int) -> bool:
     '''
     Überprüf ob der Buchstabe an der richtigen Position steht
     '''
@@ -21,16 +21,13 @@ def checkForRightPosition(word, letter, position):
         return True
     return False
 
-def getWordGuess():
+def getWordGuess() -> dict:
     '''
     Gibt die Buchstaben und ihre Position zurück
     '''
     word = input()
-    word = word.upper
+    word = word.upper()
     result = {}
     for i in range(len(word)):
         result[i] = word[i]
     return result
-
-
-
