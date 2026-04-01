@@ -13,7 +13,8 @@ def setup():
                     id INTEGER PRIMARY KEY AUTOINCREMENT, 
                     name TEXT, 
                     lastword TEXT, 
-                    score NULL
+                    score NULL,
+                    Timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
                 )""")
     cur.execute("""
                 CREATE TABLE english_word_list(
@@ -31,7 +32,7 @@ def setup():
 
     with open("wordlist-german.txt", "r") as f:
         while True:
-            word = f.readline()
+            word = f.readline().rstrip()
             if word == '':
                 break
             cur.execute("""
@@ -42,7 +43,7 @@ def setup():
             
     with open("wordlist-english.txt", "r") as f:
         while True:
-            word = f.readline()
+            word = f.readline().rstrip()
             if word == '':
                 break
             cur.execute("""
