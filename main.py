@@ -1,9 +1,16 @@
+class Player:
+    name : str
+    score: int = 0
+    level: int = 3
+    remainingAttempts: int = 5
+    allAttemps: int = 0
+    lastGuessedWord: str = ""
+
 if __name__ == "__main__":
     import HelperFunctions as hf
     import DatabaseHandling as db
     import setup
-
-    print("hello world!")
+    from UI.Console import Console
 
     def databasePrompting() -> None:
         '''
@@ -28,22 +35,13 @@ if __name__ == "__main__":
                   Please try again. (y/N)""")
             databasePrompting()
 
-    class Player:
-        name : str
-        score: int = 0
-        level: int = 1
-        levelAttemps: int = 0
-        allAttemps: int = 0
-    
     # Checks if the Database is active or not.
     try:
-        open("wordle.db", "+w").close()
+        open("wordle.db", "+r").close()
     except Exception as e:
         databasePrompting()
 
-    player = Player
+    player = Player()
+    console = Console(player)
 
-    hf.
-
-else:
-    raise Exception("This script cannot be importet")
+    console.run()

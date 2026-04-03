@@ -54,7 +54,7 @@ def checkWord(guessWord: str, word: str):
     Returns Color Mapping for a word.
     '''
     mapping = []
-    for i, letter in guessWord:
+    for i, letter in enumerate(guessWord):
         rPos = checkForRightPosition(word=word, letter=letter, position=i)
         rLet = checkForRightLetter(word=word, letter=letter)
         if rPos:
