@@ -49,6 +49,22 @@ def checkForRightPosition(word: str, letter: str, position: int) -> bool:
         return True
     return False
 
+def checkWord(guessWord: str, word: str):
+    '''
+    Returns Color Mapping for a word.
+    '''
+    mapping = []
+
+    for i, letter in guessWord:
+        rPos = checkForRightPosition(word=word, letter=letter, position=i)
+        rLet = checkForRightLetter(word=word, letter=letter)
+        if rPos:
+            mapping.append(Colors.GREEN)
+        elif rLet:
+            mapping.append(Colors.YELLOW)
+        else:
+            mapping.append(Colors.RED)
+    return mapping
 
 def applyMarkerTokWord(word: str, colors: list[str]) -> str:
     '''
