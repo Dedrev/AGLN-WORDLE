@@ -49,16 +49,6 @@ def checkForRightPosition(word: str, letter: str, position: int) -> bool:
         return True
     return False
 
-def getWordGuess() -> dict:
-    '''
-    Gibt die Buchstaben und ihre Position zurück
-    '''
-    word = input()
-    word = word.upper()
-    result = {}
-    for i in range(len(word)):
-        result[i] = word[i]
-    return result
 
 def applyMarkerTokWord(word: str, colors: list[str]) -> str:
     '''
