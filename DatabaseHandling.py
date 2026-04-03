@@ -17,7 +17,7 @@ class Database:
 
         return cur.fetchmany(nLeaders)
     
-    def getRWordByLength(self, l=3, table_name=GERMAN_TABLE) -> str:
+    def getRandWordByLength(self, l=3, table_name=GERMAN_TABLE) -> str:
         '''
         Holt ein Random wort aus der angegebenen Tabelle
         mit einer angegebenen Leange
@@ -39,6 +39,6 @@ class Database:
 if __name__ == "__main__":
     db = Database()
 
-    print(db.getRWordByLength(l=3, table_name=GERMAN_TABLE))
+    print(db.getRandWordByLength(l=3, table_name=GERMAN_TABLE))
     print(db.writeToLeaderboard(name="Markus", lastword="LASTWORD", score=1024024202))
     print(db.getLeaderboard(nLeaders=3))
