@@ -1,4 +1,3 @@
-
 class Colors:
     """ ANSI color codes """
     BLACK = "\033[0;30m"
@@ -45,7 +44,7 @@ def checkForRightPosition(word: str, letter: str, position: int) -> bool:
     '''
     Überprüf ob der Buchstabe an der richtigen Position steht
     '''
-    if(word.upper()[position] == letter.upper()):
+    if(word[position].upper() == letter.upper()):
         return True
     return False
 

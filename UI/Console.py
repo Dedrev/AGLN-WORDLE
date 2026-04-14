@@ -4,6 +4,7 @@ from main import Player
 import DatabaseHandling
 
 # NOTE Maybe add a difficulty system with limiting attempts or something like that.
+# NOTE THIS IS AN EXAMPLE
 
 class Console(Engine):
     def __init__(self, player: Player):
@@ -27,7 +28,6 @@ class Console(Engine):
             if input("Do you want to Retry. (Y/n)").lower() == "n":
                 print("Leaving Game")
                 break
-
 
     def showDashboard(self):
         print("WELCOME TO WORDLE")
