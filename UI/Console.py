@@ -10,6 +10,7 @@ class Console(Engine):
     def __init__(self, player: Player):
         super().__init__(player=player)
 
+    # startpunkt
     def run(self):
         self.showDashboard()
         self.setupPrompt()
@@ -35,6 +36,7 @@ class Console(Engine):
         for i in self.database.getLeaderboard():
             print(f"Name: {i[0]}, Last Word: {i[1]}, Score: {i[2]}")
 
+    
     def setupPrompt(self):
         self.player.name = input("Please Enter your Username: ")
 

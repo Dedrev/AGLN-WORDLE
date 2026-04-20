@@ -17,8 +17,10 @@ class Window:
         raise Exception("Not Implemented yet")
     
 class Engine:
-    def __init__(self):
-        pass
+    windows = list[Window]
+    selectedWindow = 0
+    def __init__(self, windows = []):
+        self.windows = windows
 
     def setup():
         [print(i) for i in range(get_terminal_size().lines)]
@@ -26,3 +28,10 @@ class Engine:
 
     def start():
         raise Exception("Not implemented")
+    
+    def inputHandler():
+        raise Exception("Not implemented")
+    
+    def update():
+        raise Exception("Not implemented")
+    
