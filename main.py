@@ -13,6 +13,8 @@ if __name__ == "__main__":
     import setup
     from UI.Console import Console    
     import UI.RigidConsoleStart as rgds
+    import UI.RigidConsoleStart
+
     def databasePrompting() -> None:
         '''
         Wird aufgerufen wenn eine file nicht zugeanglich ist,
@@ -42,7 +44,11 @@ if __name__ == "__main__":
     except Exception as e:
         databasePrompting()
 
-    player = Player()
-
-    # console = Console(player)
-    # console.run()
+    while (True):
+        player = Player()
+        wordle_i = int(input("Worlde 1 or 2 "))
+        if wordle_i == 1:
+            console = Console(player)
+            console.run()
+        elif wordle_i == 2:
+            UI.RigidConsoleStart.WordleCli().run()
