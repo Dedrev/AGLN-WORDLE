@@ -2,15 +2,15 @@ import UI.BaseClass as Base
 import os
 import pyfiglet
 import time
-import keyboard
-
+from pynput import keyboard
+import curses
 
 
 class Window(Base.Window):
     name = ""
     properties = []
-    def __init__(self, name="TheGreatestWindowThatHasEverLived"):
-        super().__init__(curPos=[0,0])
+    def __init__(self, player, name="TheGreatestWindowThatHasEverLived"):
+        super().__init__(player)
         self.name = name
 
     def addProperty(self, property: Property):
@@ -18,8 +18,10 @@ class Window(Base.Window):
 
     # TODO Implement position size etc.
     def render(self):
-        for i in self.properties:
-            print(i.draw(), end="")
+        canvas = "\n"*os.get_terminal_size().lines
+        for property in self.properties:
+            property().curPos()
+            canvas += property().draw()
 
 
 
@@ -37,6 +39,7 @@ class Property:
     
     def onKeyPress(self, key: str, engine: Base.Engine):
         pass
+
 
 class Rectangle(Property):
     colorCode = "\x1b[47m"
@@ -65,61 +68,75 @@ class Background(Rectangle):
 class Text(Property):
     text=""
 
-    def __init__(self, curPos=[0, 0]):
+    def __init__(self, curPos=[0, 0], text=""):
         super().__init__(curPos)
 
     def draw(self):
         text = pyfiglet.figlet_format("WORDLE")
         # curPos[0] must be bigger than 0
-        text.replace("\n", f"\033[B\033[{self.curPos[0]}G")
+        print(text, end="")
 
 class Button(Property):
-    def __init__(self, curPos=[0, 0], size=[1,1]):
+
+    properties = []
+
+    def __init__(self, curPos=[0, 0], size=[1,1], text=""):
         super().__init__(curPos)
         self.rectangle = Rectangle(curPos=curPos, size=size)
         self.text = Text(curPos=curPos)
+        self.properties = [
+            Rectangle(curPos=curPos, size=size),
+            Text(curPos=curPos, text=text)
+        ]
+
+    def event(self):
+        raise Exception("Not implemented")
 
     def draw(self):
-        return 
-
-
+        for property in self.properties:
+            property.draw()
+        
 class Menue(Property):
     options = [
-        "Start",
-        "Quit"
     ]
 
     selected = 0
 
-    def __init__(self, curPos=[0, 0]):
-        super().__init__(curPos)
+    def __init__(self, curPos=[0,0], buttonOptionList: list[Button] = []):
+        super().__init__(curPos=curPos)
+        self.options = buttonOptionList
 
-    def actionInitializer():
-        keyboard
-        
     def onKeyPress(self, key: str, engine: Base.Engine):
         if key in ["up", "w"]:
             selected += -1 if self.selected > 0 else 0
         elif key in ["down", "s"]:
             selected += -1 if self.selected < len(self.options) else 0
         elif key == "enter":
-            self.options[self.selected]
-
+            self.options[self.selected].event()
         
     def draw(self):
-        pass
+        for option in self.options:
+            option().draw()
 
 
 class SlideEngine(Base.Engine):
     def __init__(self, windows: list[Window]):
         super().__init__(windows)
+        self.stdscr = curses.initscr()
+        curses.noecho()
+        curses.cbreak()
 
     def start(self):
-        keyboard.hook(self.inputHandler)
+        listener = keyboard.Listener(
+            on_press=self.inputHandler
+        )
+        listener.start()
+        while (True):
+            time.sleep(0.2)
 
-    def inputHandler(self, event: keyboard.KeyboardEvent):
+    def inputHandler(self, key):
         for property in self.windows[self.selectedWindow].properties:
-            property.onKeyPress(event.name, self)
+            property().onKeyPress(key=key, engine=self)
         self.update()
     
     def update(self):

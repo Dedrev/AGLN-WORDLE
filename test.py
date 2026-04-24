@@ -1,14 +1,44 @@
-import pyfiglet, sys
+import curses
+stdscr = curses.initscr()
 
-text = pyfiglet.figlet_format("WORDLE")
-lines = text.splitlines()
+curses.noecho()
+curses.cbreak()
+stdscr.keypad(True)
 
-out = "\033[1G"               # explizit zu Spalte 1 — NEU
+curses.nocbreak()
+stdscr.keypad(False)
+curses.echo()
 
-for i in lines:
-    out += i+"\033[B"+f"\033[{len(i)}D"
+curses.endwin()
 
-sys.stdout.write(out)
-sys.stdout.flush()
 
-print(repr(out))
+from curses import wrapper
+
+def main(stdscr):
+    # Clear screen
+    stdscr.clear()
+
+    # This raises ZeroDivisionError when i == 10.
+    for i in range(0, 11):
+        v = i-10
+        stdscr.addstr(i, 0, '10 divided by {} is {}'.format(v, 10/v))
+
+        stdscr.refresh()
+        stdscr.getkey()
+
+wrapper(main)
+
+# pad = curses.newpad(100, 100)
+# # These loops fill the pad with letters; addch() is
+# # explained in the next section
+# for y in range(0, 99):
+#     for x in range(0, 99):
+#         pad.addch(y,x, ord('a') + (x*x+y*y) % 26)
+
+# # Displays a section of the pad in the middle of the screen.
+# # (0,0) : coordinate of upper-left corner of pad area to display.
+# # (5,5) : coordinate of upper-left corner of window area to be filled
+# #         with pad content.
+# # (20, 75) : coordinate of lower-right corner of window area to be
+# #          : filled with pad content.
+# pad.refresh( 0,0, 5,5, 20,75)

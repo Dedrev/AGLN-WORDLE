@@ -22,9 +22,8 @@ class Engine:
     def __init__(self, windows = []):
         self.windows = windows
 
-    def setup():
-        [print(i) for i in range(get_terminal_size().lines)]
-
+    def setup(self):
+        [print() for i in range(get_terminal_size().lines)]
 
     def start():
         raise Exception("Not implemented")

@@ -7,11 +7,12 @@ class Player:
     lastGuessedWord: str = ""
 
 if __name__ == "__main__":
+    
     import HelperFunctions as hf
     import DatabaseHandling as db
     import setup
-    from UI.Console import Console
-
+    from UI.Console import Console    
+    import UI.RigidConsoleStart as rgds
     def databasePrompting() -> None:
         '''
         Wird aufgerufen wenn eine file nicht zugeanglich ist,
@@ -42,6 +43,8 @@ if __name__ == "__main__":
         databasePrompting()
 
     player = Player()
-    console = Console(player)
 
-    console.run()
+    rgds.start()
+
+    # console = Console(player)
+    # console.run()
