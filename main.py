@@ -1,5 +1,5 @@
 class Player:
-    name : str
+    name : str = ""
     score: int = 0
     level: int = 3
     remainingAttempts: int = 5
@@ -43,8 +43,6 @@ if __name__ == "__main__":
         databasePrompting()
 
     player = Player()
-
-    rgds.start()
 
     # console = Console(player)
     # console.run()

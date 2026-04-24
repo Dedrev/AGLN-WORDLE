@@ -141,3 +141,9 @@ class SlideEngine(Base.Engine):
     
     def update(self):
         self.windows[self.selectedWindow].render()
+
+    def exit(self):
+        curses.nocbreak()
+        self.stdscr.keypad(False)
+        curses.echo()
+        curses.endwin()
