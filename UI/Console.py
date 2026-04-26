@@ -1,4 +1,4 @@
-from UI.BaseClass import Engine
+from UI.ConsoleEngine import Engine
 from HelperFunctions import *
 from main import Player
 import DatabaseHandling
