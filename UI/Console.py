@@ -13,7 +13,17 @@ class Console(Engine):
         self.showDashboard()
         self.setupPrompt()
         while True:
-            self.startGame()
+            languageInput = input("Möchten sie das Spiel in Englisch oder Deutsch Spielen? (D/E): ")
+            if(languageInput.lower() == "e"):
+                print("Playing in English")
+                table = DatabaseHandling.ENGLISH_TABLE
+            elif(languageInput.lower() == "d"):
+                print("Playing in German")
+                table = DatabaseHandling.GERMAN_TABLE
+            else:
+                print("Invalid Input. Please try again.")
+                continue
+            self.startGame(table)
             if input("Do you want to Retry. (Y/n)").lower() == "n":
                 print("Leaving Game")
                 break
@@ -23,35 +33,32 @@ class Console(Engine):
         print("WELCOME TO WORDLE")
         print("LEADERBOARD")
         for i in self.database.getLeaderboard():
-            print(i[0], "    ", i[1],"    " ,  i[2])
+            print(f"Name: {i[0]}, Last Word: {i[1]}, Score: {i[2]}")
 
     def setupPrompt(self):
         self.player.name = input("Please Enter your Username: ")
 
-    def startGame(self):
+    def startGame(self, table):
         while True:
             # TODO Add handling for when level is higher than highest word
-            language = input("Möchten sie das Spiel in Englisch oder Deutsch Spielen? (D/E): ")
-            if(language.lower() == "e"):
-                print("Playing in English")
-                word = self.database.getRandWordByLength(self.player.level, table_name=DatabaseHandling.ENGLISH_TABLE)
-            elif(language.lower() == "d"):
-                print("Playing in German")
-                word = self.database.getRandWordByLength(self.player.level, table_name=DatabaseHandling.GERMAN_TABLE)
+            word = self.database.getRandWordByLength(self.player.level, table_name=table)
             print(f"Starting with Level {self.player.level}")
-            
             while True:
                 guessWord = input("Guess: ")[:self.player.level]
+                if len(guessWord) != self.player.level:
+                    print(f"Please enter a word with {self.player.level} letters.")
+                    continue
                 colMapping = checkWord(guessWord=guessWord, word=word)
                 print(applyMarkerTokWord(guessWord,colMapping), Colors.END)
+                print(f"Remaining Attempts: {self.player.remainingAttempts}")
                 if guessWord.upper() == word.upper():
                     print("The word was guessed right.")
                     print("Going to the next level")
                     self.player.level += 1
                     self.player.allAttemps += Player.remainingAttempts - self.player.remainingAttempts
                     self.player.remainingAttempts = Player.remainingAttempts
+                    self.player.score += getScore(len(word), self.player.remainingAttempts)
                     self.player.lastGuessedWord = word
-                    getScore(len(word), self.player.remainingAttempts)
                     break
                 elif self.player.remainingAttempts <= 0:
                     print("To many attempts. Failed to Guess word." \
