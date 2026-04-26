@@ -46,9 +46,9 @@ if __name__ == "__main__":
 
     while (True):
         player = Player()
-        wordle_i = int(input("Worlde 1 or 2: "))
-        if wordle_i == 1:
+        wordle_i = input("Worlde 1 or 2: ")
+        if wordle_i == "1":
             console = Console(player)
             console.run()
-        elif wordle_i == 2:
+        elif wordle_i == "2":
             UI.RigidConsoleStart.WordleCli().run()
