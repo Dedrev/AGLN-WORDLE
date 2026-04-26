@@ -29,7 +29,7 @@ def setup():
 
     print("Created Tables")
     print("Populating Tables with data")
-
+    
     with open("wordlist-german.txt", "r") as f:
         while True:
             word = f.readline().rstrip()

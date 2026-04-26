@@ -23,7 +23,7 @@ if __name__ == "__main__":
         entscheiden kann ob eine db erstellen will oder den
         Prozess unterbrechen will.
         '''
-        print("""Could not Database. 
+        print("""Could not find Database. 
               It could be because of missing permissions
               or it could be because the Database was not created.""")
         print("Do you want to create the Database. (y/N)")
