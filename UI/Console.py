@@ -31,13 +31,20 @@ class Console(Engine):
     def startGame(self):
         while True:
             # TODO Add handling for when level is higher than highest word
+            language = input("Möchten sie das Spiel in Englisch oder Deutsch Spielen? (D/E): ")
+            if(language.lower() == "e"):
+                print("Playing in English")
+                word = self.database.getRandWordByLength(self.player.level, table_name=DatabaseHandling.ENGLISH_TABLE)
+            elif(language.lower() == "d"):
+                print("Playing in German")
+                word = self.database.getRandWordByLength(self.player.level, table_name=DatabaseHandling.GERMAN_TABLE)
             print(f"Starting with Level {self.player.level}")
-            word = self.database.getRandWordByLength(self.player.level, table_name=DatabaseHandling.GERMAN_TABLE)            
+            
             while True:
                 guessWord = input("Guess: ")[:self.player.level]
                 colMapping = checkWord(guessWord=guessWord, word=word)
                 print(applyMarkerTokWord(guessWord,colMapping), Colors.END)
-                if guessWord == word:
+                if guessWord.upper() == word.upper():
                     print("The word was guessed right.")
                     print("Going to the next level")
                     self.player.level += 1
@@ -47,7 +54,8 @@ class Console(Engine):
                     getScore(len(word), self.player.remainingAttempts)
                     break
                 elif self.player.remainingAttempts <= 0:
-                    print("To many attempts. Failed to Guess word.")
+                    print("To many attempts. Failed to Guess word." \
+                    "The word was: ", word)
                     print("Saving progress to Leaderboard")
                     self.database.writeToLeaderboard(self.player.name, self.player.lastGuessedWord, self.player.score)
                     self.player.remainingAttempts = Player.remainingAttempts

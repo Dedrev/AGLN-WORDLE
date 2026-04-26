@@ -45,7 +45,7 @@ def checkForRightPosition(word: str, letter: str, position: int) -> bool:
     '''
     Überprüf ob der Buchstabe an der richtigen Position steht
     '''
-    if(word[position] == letter):
+    if(word.upper()[position] == letter.upper()):
         return True
     return False
 
