@@ -27,11 +27,11 @@ class Colors:
     END = "\033[0m"
     ORANGE = "\033[48:2:255:165:0m%s\033[m"
 
-def getScore(wordLentgh: int,attempts: int) -> int:
+def getScore(wordLentgh: int,remainingAttempts: int) -> int:
     '''
     Gibt den Score für das aktuelle Level raus
     '''
-    return wordLentgh * 10 + ((5 - attempts) *5)
+    return wordLentgh * 10 + (remainingAttempts *5)
 
 def checkForRightLetter(word: str,letter: str) -> bool:
     '''
