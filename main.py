@@ -46,7 +46,7 @@ if __name__ == "__main__":
 
     while (True):
         player = Player()
-        wordle_i = int(input("Worlde 1 or 2 "))
+        wordle_i = int(input("Worlde 1 or 2: "))
         if wordle_i == 1:
             console = Console(player)
             console.run()
