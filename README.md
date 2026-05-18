@@ -1,4 +1,4 @@
-# AGLN-WORDL
+# AGLN-WORDLE
 School project
 
 Arbeitsauftrag: Projekt "Progressives Wordle" – Alternativer Leistungsnachweis
