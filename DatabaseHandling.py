@@ -8,7 +8,7 @@ class Database:
     def __init__(self, file="wordle.db"):
         self.con = sqlite3.connect(file)
 
-    def getLeaderboard(self, nLeaders=5) -> list[list[str, str, int]]:
+    def getLeaderboard(self, nLeaders=5) -> list[tuple[str, str, int]]:
         '''
         Holt eine bestimmte anzahl an leaders aus der highscore Tabelle
         '''
@@ -45,5 +45,5 @@ if __name__ == "__main__":
     db = Database()
 
     print(db.getRandWordByLength(l=3, table_name=GERMAN_TABLE))
-    print(db.writeToLeaderboard(name="Markus", lastword="LASTWORD", score=1024024202))
+    print(db.writeToLeaderboard(name="Markus", lastword="LASTWORD", score=str(1024024202)))
     print(db.getLeaderboard(nLeaders=3))

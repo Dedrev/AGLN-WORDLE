@@ -1,3 +1,5 @@
+import DatabaseHandling as db
+
 class Player:
     name : str = ""
     score: int = 0
@@ -5,11 +7,11 @@ class Player:
     remainingAttempts: int = 5
     allAttemps: int = 0
     lastGuessedWord: str = ""
+    lang = db.GERMAN_TABLE 
 
 if __name__ == "__main__":
     
     import HelperFunctions as hf
-    import DatabaseHandling as db
     import setup
     from UI.Console import Console    
     import UI.RigidConsoleStart as rgds
@@ -51,4 +53,4 @@ if __name__ == "__main__":
             console = Console(player)
             console.run()
         elif wordle_i == "2":
-            UI.RigidConsoleStart.WordleCli().run()
+            UI.RigidConsoleStart.WordleCli().run(player)
