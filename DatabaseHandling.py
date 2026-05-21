@@ -35,10 +35,13 @@ class Database:
         cur.execute("INSERT INTO highscores (name, lastword, score) VALUES (?,?,?)",
                     (name, lastword, score))
         self.con.commit()
+        cur.close()
 
-    def checkForEntry(self, name, table_name=GERMAN_TABLE):
+    def checkForEntry(self, word, table_name=GERMAN_TABLE):
+        if word == "":
+            return False
         cur = self.con.cursor()
-        cur.execute(f"SELECT 1 FROM {table_name} WHERE name = ?", (name))
+        cur.execute(f"SELECT 1 FROM {table_name} WHERE word = ?", (word,))
         return cur.fetchone() != None
 
 if __name__ == "__main__":

@@ -51,7 +51,6 @@ class WordleCli():
         curses.nocbreak()
         self.stdscr.keypad(False)
         curses.echo()
-        curses.endwin()
         exit()
 
 
@@ -125,7 +124,11 @@ class WordleCli():
                 # Move player to typing position
                 self.stdscr.move(height-1, 0)
                 guessWord = ""
-                while (len(guessWord) !=self.player.level):
+                # checks if the word has the right amount of letters and checks, if the setting is set to true, if the word is in the db
+                # else it loops again
+                while (len(guessWord) != self.player.level 
+                       or not self.database.checkForEntry(guessWord, self.player.lang) if self.player.word_check else False):
+                    
                     guessWord = self.stdscr.getstr().decode("utf-8").upper()
                     self.stdscr.clrtoeol()
                 colMapping = checkWord(guessWord=guessWord[:self.player.level], word=word)
@@ -138,7 +141,7 @@ class WordleCli():
                     elif mapping == Colors.RED:
                         self.stdscr.addstr(height-underside+line,i, guessWord[i], curses.color_pair(6))
                 line+=1
-                # checkes if the word was right    
+                # checkes if the word was right and levels up the player
                 if guessWord == word:
                     self.player.level += 1
                     self.player.allAttemps += Player.remainingAttempts - self.player.remainingAttempts
@@ -147,9 +150,9 @@ class WordleCli():
                     self.player.score = getScore(len(word), self.player.remainingAttempts)
                     self.stdscr.clear()
                     break
-                # checks if player lose
+                # checks if player lost
                 elif self.player.remainingAttempts <= 0:
-                    # Writes Progress to Leaderboard. 
+                    # Writes Progress to Leaderboard
                     self.database.writeToLeaderboard(self.player.name, self.player.lastGuessedWord, str(self.player.score))
                     # Resets Player Data
                     self.player.remainingAttempts = Player.remainingAttempts
@@ -158,21 +161,24 @@ class WordleCli():
 
                 self.player.remainingAttempts -= 1
                 self.stdscr.refresh()
-
+    # changes table lang to the other lang
+    # TODO: Make it dynamicly so that new lists can be added.
     def change_lang(self):
         if self.player.lang == DatabaseHandling.GERMAN_TABLE:
             self.player.lang = DatabaseHandling.ENGLISH_TABLE
         elif self.player.lang == DatabaseHandling.ENGLISH_TABLE:
             self.player.lang = DatabaseHandling.GERMAN_TABLE
+    
+        self.options()
 
-        self.create_menue(options={
-            "wordlist: " + self.player.lang: self.change_lang,
-            "main menue": self.main_menue
-        })
+    def change_word_check(self):
+        self.player.word_check = not self.player.word_check
+        self.options()
  
     def options(self):
         self.create_menue(options={
             "wordlist: " + self.player.lang: self.change_lang,
+            "word check: " + str(self.player.word_check): self.change_word_check,
             "main menue": self.main_menue 
         })
 

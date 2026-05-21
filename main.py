@@ -8,6 +8,7 @@ class Player:
     allAttemps: int = 0
     lastGuessedWord: str = ""
     lang = db.GERMAN_TABLE 
+    word_check = False
 
 if __name__ == "__main__":
     
