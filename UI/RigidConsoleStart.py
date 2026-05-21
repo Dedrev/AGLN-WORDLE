@@ -40,121 +40,103 @@ def drawTitle(stdscr, text, y):
 
     return y
 
+    
+
 class WordleCli():
     def __init__(self):
         self.database = DatabaseHandling.Database()
 
-    def drawLeaderBoard(self, stdscr):
+
+    def exit_curses(self):
+        curses.nocbreak()
+        self.stdscr.keypad(False)
+        curses.echo()
+        curses.endwin()
+        exit()
+
+
+    def drawLeaderBoard(self):
         """
         Draws LEADERBOARD
         """
-        stdscr.addstr(0,0, "LEADERBOARD", curses.color_pair(1))
-        stdscr.addstr(1, 3, "Name", curses.color_pair(1))
-        stdscr.addstr(1, 26, "Score", curses.color_pair(1))
-        stdscr.addstr(1, 33, "Last Word", curses.color_pair(1))
+        self.stdscr.addstr(0,0, "LEADERBOARD", curses.color_pair(1))
+        self.stdscr.addstr(1, 3, "Name", curses.color_pair(1))
+        self.stdscr.addstr(1, 26, "Score", curses.color_pair(1))
+        self.stdscr.addstr(1, 33, "Last Word", curses.color_pair(1))
         for i, leader in enumerate(self.database.getLeaderboard()):
-            stdscr.addstr(i+2,0, str(i+1))
-            stdscr.addstr(i+2, 3, leader[0])
-            stdscr.addstr(i+2, 26, str(leader[2]))
-            stdscr.addstr(i+2, 33, leader[1])
+            self.stdscr.addstr(i+2,0, str(i+1))
+            self.stdscr.addstr(i+2, 3, leader[0])
+            self.stdscr.addstr(i+2, 26, str(leader[2]))
+            self.stdscr.addstr(i+2, 33, leader[1])
 
-    def failedScreen(self, stdscr):
-        # Locks controlls for Menue
-        curses.cbreak()
-        curses.noecho()
-        stdscr.clear()
-        stdscr.refresh()
+    def failedScreen(self):
+        self.create_menue(
+            options={
+            "restart": self.startGame,
+            "options": self.options,
+            "quit": self.exit_curses
+            },
+            extraAction=self.drawLeaderBoard
+        )
 
-        self.drawLeaderBoard(stdscr)
-
-        k = 0
-        cursor_y = 0
-        while (True):
-            # Decision tree
-            if k == curses.KEY_DOWN and cursor_y < 1:
-                cursor_y = cursor_y + 1
-            elif k == curses.KEY_UP and cursor_y > 0:
-                cursor_y = cursor_y - 1
-            # code for keyboard enter not numpad
-            elif k == 10:
-                if cursor_y == 0:
-                    return
-                elif cursor_y == 1:
-                    exit()
-
-            height, width = stdscr.getmaxyx()
-            # UI
-            start_y = int((height // 5))
-            drawTitle(stdscr=stdscr, text="WORDLE", y=start_y)
-
-            start_y = int((height // 3))
-            # Dynamicly draw highlighting
-            start_y = drawUTFTextCenter(stdscr=stdscr, text="restart", y=start_y, color_pair=curses.color_pair(3 if cursor_y == 0  else 1))+ 2
-            start_y = drawUTFTextCenter(stdscr=stdscr, text="quit", y=start_y, color_pair=curses.color_pair(3 if cursor_y == 1  else 1))
-            ###############
-            
-            curses.use_default_colors()
-            stdscr.refresh()
-            k = stdscr.getch()
-
-    def startGame(self, stdscr):
+    def startGame(self):
         # Resets console
-        stdscr.clear()
+        self.stdscr.clear()
         # enables normal writing
         curses.nocbreak()
         # enables displaying of characters
         curses.echo()
         
         # init player and asks for user name in prompt
-        stdscr.addstr(0,0,"Please Enter your Name")
-        stdscr.move(1,0)
+        self.stdscr.addstr(0,0,"Please Enter your Name")
+        self.stdscr.move(1,0)
         # loops as long the name is empty
         while self.player.name == "":
-            self.player.name = stdscr.getstr().decode("utf-8")
+            self.player.name = self.stdscr.getstr().decode("utf-8")
             if len(self.player.name) > 20:
                 self.player.name = ""
-                stdscr.addstr(2,0,"Name can have max 20 letters", curses.color_pair(2))
-            stdscr.move(1,0)
+                self.stdscr.addstr(2,0,"Name can have max 20 letters", curses.color_pair(2))
+            self.stdscr.move(1,0)
             # clears line
-            stdscr.clrtoeol()
+            self.stdscr.clrtoeol()
 
-        stdscr.clear()
-        stdscr.refresh()
+        self.stdscr.clear()
+        self.stdscr.refresh()
         # Main Loop
         # Loops  
         while (True):
             line = 0
             word = self.database.getRandWordByLength(self.player.level, table_name=self.player.lang)
             # UI Setup
-            drawTitle(stdscr=stdscr, text="WORDLE", y=0)
-            height, width = stdscr.getmaxyx()
+            drawTitle(stdscr=self.stdscr, text="WORDLE", y=0)
+            height, width = self.stdscr.getmaxyx()
             underside = height//4
             # creates white space for placing guessWords
             for i in range(underside):
-                stdscr.addstr(height-i-2,0, " "*width, curses.color_pair(1))
+                self.stdscr.addstr(height-i-2,0, " "*width, curses.color_pair(1))
     
             # Game Info
-            stdscr.addstr(0,0,"Score: "+str(self.player.score), curses.color_pair(3))
-            stdscr.addstr(1,0,"Level: "+str(self.player.level), curses.color_pair(1))
-            stdscr.addstr(3,0,"Name: "+self.player.name, curses.color_pair(1))
+            self.stdscr.addstr(0,0,"Score: "+str(self.player.score), curses.color_pair(3))
+            self.stdscr.addstr(1,0,"Level: "+str(self.player.level), curses.color_pair(1))
+            self.stdscr.addstr(3,0,"Name: "+self.player.name, curses.color_pair(1))
             # level iterator
             while (True):
 
                 # Move player to typing position
-                stdscr.move(height-1, 0)
+                self.stdscr.move(height-1, 0)
                 guessWord = ""
                 while (len(guessWord) !=self.player.level):
-                    guessWord = stdscr.getstr().decode("utf-8").upper()
-                    stdscr.clrtoeol()
+                    guessWord = self.stdscr.getstr().decode("utf-8").upper()
+                    self.stdscr.clrtoeol()
                 colMapping = checkWord(guessWord=guessWord[:self.player.level], word=word)
                 # Maps ansii color codes to curses format
                 for i, mapping in enumerate(colMapping):
                     if mapping == Colors.GREEN:
-                        stdscr.addstr(height-underside+line,i, guessWord[i], curses.color_pair(4))
+                        self.stdscr.addstr(height-underside+line,i, guessWord[i], curses.color_pair(4))
                     elif mapping == Colors.YELLOW:
-                        stdscr.addstr(height-underside+line,i, guessWord[i], curses.color_pair(5))
+                        self.stdscr.addstr(height-underside+line,i, guessWord[i], curses.color_pair(5))
                     elif mapping == Colors.RED:
-                        stdscr.addstr(height-underside+line,i, guessWord[i], curses.color_pair(6))
+                        self.stdscr.addstr(height-underside+line,i, guessWord[i], curses.color_pair(6))
                 line+=1
                 # checkes if the word was right    
                 if guessWord == word:
@@ -163,88 +145,47 @@ class WordleCli():
                     self.player.remainingAttempts = Player.remainingAttempts
                     self.player.lastGuessedWord = word
                     self.player.score = getScore(len(word), self.player.remainingAttempts)
-                    stdscr.clear()
+                    self.stdscr.clear()
                     break
                 # checks if player lose
                 elif self.player.remainingAttempts <= 0:
+                    # Writes Progress to Leaderboard. 
                     self.database.writeToLeaderboard(self.player.name, self.player.lastGuessedWord, str(self.player.score))
+                    # Resets Player Data
                     self.player.remainingAttempts = Player.remainingAttempts
                     # Sends player to lose screen
-                    self.failedScreen(stdscr=stdscr)
-
-                    # Releases the controlls for the player
-                    curses.nocbreak()
-                    curses.echo()
-                    # Resets player and Game
-                    self.player = Player()
-                    break
+                    self.failedScreen()
 
                 self.player.remainingAttempts -= 1
-                stdscr.refresh()
+                self.stdscr.refresh()
 
-    def options(self, stdscr):
+    def change_lang(self):
+        if self.player.lang == DatabaseHandling.GERMAN_TABLE:
+            self.player.lang = DatabaseHandling.ENGLISH_TABLE
+        elif self.player.lang == DatabaseHandling.ENGLISH_TABLE:
+            self.player.lang = DatabaseHandling.GERMAN_TABLE
+
+        self.create_menue(options={
+            "wordlist: " + self.player.lang: self.change_lang,
+            "main menue": self.main_menue
+        })
+ 
+    def options(self):
+        self.create_menue(options={
+            "wordlist: " + self.player.lang: self.change_lang,
+            "main menue": self.main_menue 
+        })
+
+
+    def create_menue(self, options: dict, extraAction= lambda: None):
         curses.noecho()
+        curses.cbreak()
         k = 0
         cursor_y = 0
 
         # Clear and refresh the screen for a blank canvas
-        stdscr.clear()
-        stdscr.refresh()
-
-        # Sets background to standard color
-        curses.use_default_colors()
-
-        # Main Menue Loop
-        while (True):
-            # Keyboard input decision tree
-            if k == curses.KEY_DOWN and cursor_y < 1:
-                cursor_y = cursor_y + 1
-            elif k == curses.KEY_UP and cursor_y > 0:
-                cursor_y = cursor_y - 1
-            # code for keyboard enter not numpad
-            elif k == 10:
-                stdscr.clear()
-                stdscr.refresh()
-                
-                # When on start
-                if cursor_y == 0:
-                    if self.player.lang == DatabaseHandling.GERMAN_TABLE:
-                        self.player.lang = DatabaseHandling.ENGLISH_TABLE
-                    elif self.player.lang == DatabaseHandling.ENGLISH_TABLE:
-                        self.player.lang = DatabaseHandling.GERMAN_TABLE
-                # When on quit
-                elif cursor_y == 1:
-                    return;
-
-            height, width = stdscr.getmaxyx()
-            start_y = int((height // 5))
-            # draws WORDLE titel
-            drawTitle(stdscr=stdscr, text="OPTIONS", y=start_y)
-            # draws menue options
-            start_y = int((height // 3))
-            # Dynamicly draw highlighting
-            start_y = drawUTFTextCenter(stdscr=stdscr, text="wordlist: " + self.player.lang, y=start_y, color_pair=curses.color_pair(3 if cursor_y == 0  else 1))+ 2
-            start_y = drawUTFTextCenter(stdscr=stdscr, text="main menue", y=start_y, color_pair=curses.color_pair(3 if cursor_y == 1  else 1))
-            ##########
-            stdscr.refresh()
-            # Wait for keyboard press
-            k = stdscr.getch()
-
-
-
-
-
-
-
-
-    def draw_menu(self, stdscr):
-        curses.noecho()
-        k = 0
-        cursor_y = 0
-
-        # Clear and refresh the screen for a blank canvas
-        stdscr.clear()
-        stdscr.refresh()
+        self.stdscr.clear()
+        self.stdscr.refresh()
 
         # Sets color prefaps
         curses.start_color()
@@ -260,45 +201,46 @@ class WordleCli():
 
         # Main Menue Loop
         while (True):
-            self.drawLeaderBoard(stdscr)
-
             # Keyboard input decision tree
-            if k == curses.KEY_DOWN and cursor_y < 2:
+            if k == curses.KEY_DOWN and cursor_y < len(options)-1:
                 cursor_y = cursor_y + 1
             elif k == curses.KEY_UP and cursor_y > 0:
                 cursor_y = cursor_y - 1
             # code for keyboard enter not numpad
-            elif k == 10:
-                # When on start
-                if cursor_y == 0:
-                    self.startGame(stdscr)
-                # When on options  
-                if cursor_y == 1:
-                    self.options(stdscr)
-                # When on quit
-                elif cursor_y == 1:
-                    exit()
-                    
-            self.drawLeaderBoard(stdscr)
+            if k == 10:
+                list(options.values())[cursor_y]()
 
-            height, width = stdscr.getmaxyx()
+            height, width = self.stdscr.getmaxyx()
             start_y = int((height // 5))
             # draws WORDLE titel
-            drawTitle(stdscr=stdscr, text="WORDLE", y=start_y)
+            drawTitle(stdscr=self.stdscr, text="WORDLE", y=start_y)
             # draws menue options
             start_y = int((height // 3))
             # Dynamicly draw highlighting
-            start_y = drawUTFTextCenter(stdscr=stdscr, text="start", y=start_y, color_pair=curses.color_pair(3 if cursor_y == 0  else 1))+ 2
-            start_y = drawUTFTextCenter(stdscr=stdscr, text="options", y=start_y, color_pair=curses.color_pair(3 if cursor_y == 1 else 1))+ 2
-            start_y = drawUTFTextCenter(stdscr=stdscr, text="quit", y=start_y, color_pair=curses.color_pair(3 if cursor_y == 2  else 1))
+            for i, text in enumerate(options.keys()):
+                start_y = drawUTFTextCenter(stdscr=self.stdscr, text=text, y=start_y, color_pair=curses.color_pair(3 if cursor_y == i  else 1))+ 2
             ##########
-            stdscr.refresh()
+            extraAction()
+            self.stdscr.refresh()
             # Wait for keyboard press
-            k = stdscr.getch()
+            k = self.stdscr.getch()
 
+    # The Main Menue
+    def main_menue(self):
+        self.create_menue(options={
+            "start": self.startGame, 
+            "options": self.options,
+            "quit": self.exit_curses
+        },
+        extraAction=self.drawLeaderBoard) 
+
+    def run_init(self, stdscr):
+        self.stdscr = stdscr
+        self.main_menue()
+        
     def run(self, player: Player):
         self.player = player
-        curses.wrapper(self.draw_menu)
+        curses.wrapper(self.run_init)
 
 if __name__ == "__main__":
     WordleCli().run(Player())
