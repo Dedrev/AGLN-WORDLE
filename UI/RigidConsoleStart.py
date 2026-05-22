@@ -116,18 +116,21 @@ class WordleCli():
 
         self.stdscr.clear()
         self.stdscr.refresh()
-        # Main Loop
-        # Loops  
+        # TODO: FOR SHOWCASING
+        # self.player.level=50
+        # Main Game Loop
         while (True):
             line = 0
             word = self.database.getRandWordByLength(self.player.level, table_name=self.player.lang)
+            # If max length of words is reached endScreen is called or if activated endless mode is activated.
             if word == None:
                 if self.player.endless_mode:
                     self.player.level = Player.level
                     word = self.database.getRandWordByLength(self.player.level, table_name=self.player.lang)
                 else:
                     self.endScreen()    
-            self.stdscr.addstr(20, 0, word)
+            # TODO: FOR SHOWCASING
+            # self.stdscr.addstr(20, 0, word)
             # UI Setup
             drawTitle(stdscr=self.stdscr, text="WORDLE", y=0)
             height, width = self.stdscr.getmaxyx()
