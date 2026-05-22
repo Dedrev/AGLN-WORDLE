@@ -121,14 +121,13 @@ class WordleCli():
         while (True):
             line = 0
             word = self.database.getRandWordByLength(self.player.level, table_name=self.player.lang)
-            self.stdscr.addstr(20, 0, word)
             if word == None:
                 if self.player.endless_mode:
                     self.player.level = Player.level
                     word = self.database.getRandWordByLength(self.player.level, table_name=self.player.lang)
                 else:
-                    self.endScreen()
-                
+                    self.endScreen()    
+            self.stdscr.addstr(20, 0, word)
             # UI Setup
             drawTitle(stdscr=self.stdscr, text="WORDLE", y=0)
             height, width = self.stdscr.getmaxyx()
@@ -171,7 +170,7 @@ class WordleCli():
                     self.player.allAttemps += Player.remainingAttempts - self.player.remainingAttempts
                     self.player.remainingAttempts = Player.remainingAttempts
                     self.player.lastGuessedWord = word
-                    self.player.score = getScore(len(word), self.player.remainingAttempts)
+                    self.player.score += getScore(len(word), self.player.remainingAttempts)
                     self.stdscr.clear()
                     break
 
