@@ -217,7 +217,6 @@ class WordleCli():
         })
     
     def checkTerminalSize(self):
-        self.stdscr.nodelay(True)
         while True:
             height, width = self.stdscr.getmaxyx()
             if width >= 78 and height >= 68:
@@ -227,10 +226,8 @@ class WordleCli():
             self.stdscr.addstr(0,0, f"Min 78x68 Terminal size required | aktuell: {width}x{height}")
             self.stdscr.refresh()
 
-            while self.stdscr.getch() == curses.KEY_RESIZE:
+            if self.stdscr.getch() == curses.KEY_RESIZE:
                 curses.update_lines_cols()
-            time.sleep(0.05)
-        self.stdscr.nodelay(False)
 
     def createMenue(self, title: str, options: dict, extraAction= lambda: None):
         curses.noecho()
