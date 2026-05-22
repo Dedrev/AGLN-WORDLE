@@ -9,6 +9,7 @@ class Player:
     lastGuessedWord: str = ""
     lang = db.GERMAN_TABLE 
     word_check = False
+    endless_mode = False
 
 if __name__ == "__main__":
     

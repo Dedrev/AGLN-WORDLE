@@ -78,6 +78,16 @@ class WordleCli():
             extraAction=self.drawLeaderBoard
         )
 
+    def endScreen(self):
+        self.create_menue(
+            options={
+                "restart": self.startGame,
+                "options": self.options,
+                "quit": self.exit_curses
+                }, 
+                extraAction=self.drawLeaderBoard
+                )
+
     def startGame(self):
         # Resets console
         self.stdscr.clear()
@@ -106,6 +116,13 @@ class WordleCli():
         while (True):
             line = 0
             word = self.database.getRandWordByLength(self.player.level, table_name=self.player.lang)
+
+            if word == None:
+                if self.player.endless_mode:
+                    self.player.level = Player.level
+                else:
+                    self.endScreen()
+                
             # UI Setup
             drawTitle(stdscr=self.stdscr, text="WORDLE", y=0)
             height, width = self.stdscr.getmaxyx()
@@ -180,11 +197,16 @@ class WordleCli():
     def change_word_check(self):
         self.player.word_check = not self.player.word_check
         self.options()
+
+    def change_endless_mode(self):
+        self.player.endless_mode = not self.player.endless_mode
+        self.options()
  
     def options(self):
         self.create_menue(options={
             "wordlist: " + self.player.lang: self.change_lang,
             "word check: " + str(self.player.word_check): self.change_word_check,
+            "endless_mode: " + str(self.player.endless_mode): self.change_endless_mode,
             "main menue": self.main_menue 
         })
 

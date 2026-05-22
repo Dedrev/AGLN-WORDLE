@@ -17,7 +17,7 @@ class Database:
 
         return cur.fetchmany(nLeaders)
     
-    def getRandWordByLength(self, l=3, table_name=GERMAN_TABLE) -> str:
+    def getRandWordByLength(self, l=3, table_name=GERMAN_TABLE) -> str | None:
         '''
         Holt ein Random wort aus der angegebenen Tabelle
         mit einer angegebenen Leange
@@ -25,7 +25,11 @@ class Database:
         cur = self.con.cursor()
         cur.execute(f"SELECT word FROM {table_name} WHERE LENGTH(word) = ? ORDER BY RANDOM() LIMIT 1",
                     (l,))
-        return cur.fetchone()[0]
+
+        result = cur.fetchone()
+        if result == None:
+            return result
+        return result[0]
       
     def writeToLeaderboard(self, name: str, lastword: str, score: str):
         '''
