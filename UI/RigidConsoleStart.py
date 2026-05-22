@@ -280,6 +280,7 @@ class WordleCli():
             self.stdscr.refresh()
             # Wait for keyboard press
             k = self.stdscr.getch()
+            self.stdscr.clear()
 
     # The Main Menue
     def mainMenue(self):
