@@ -36,6 +36,7 @@ def drawTitle(stdscr, text, y):
     
     for line in lines[:-1]:
         stdscr.addstr(y, x, line)
+        y+=1
 
 
     return y
@@ -69,7 +70,8 @@ class WordleCli():
             self.stdscr.addstr(i+2, 33, leader[1])
 
     def failedScreen(self):
-        self.create_menue(
+        self.createMenue(
+            title="YOU LOST",
             options={
             "restart": self.startGame,
             "options": self.options,
@@ -79,7 +81,8 @@ class WordleCli():
         )
 
     def endScreen(self):
-        self.create_menue(
+        self.createMenue(
+            title="CONGRATS",
             options={
                 "restart": self.startGame,
                 "options": self.options,
@@ -169,8 +172,6 @@ class WordleCli():
                     self.stdscr.clear()
                     break
 
-               
-                
                 # checks if player lost
                 elif self.player.remainingAttempts <= 0:
                     # Writes Progress to Leaderboard
@@ -186,7 +187,7 @@ class WordleCli():
 
     # changes table lang to the other lang
     # TODO: Make it dynamicly so that new lists can be added.
-    def change_lang(self):
+    def changeLang(self):
         if self.player.lang == DatabaseHandling.GERMAN_TABLE:
             self.player.lang = DatabaseHandling.ENGLISH_TABLE
         elif self.player.lang == DatabaseHandling.ENGLISH_TABLE:
@@ -194,24 +195,26 @@ class WordleCli():
     
         self.options()
 
-    def change_word_check(self):
+    def changeWordCheck(self):
         self.player.word_check = not self.player.word_check
         self.options()
 
-    def change_endless_mode(self):
+    def changeEndlessMode(self):
         self.player.endless_mode = not self.player.endless_mode
         self.options()
  
     def options(self):
-        self.create_menue(options={
-            "wordlist: " + self.player.lang: self.change_lang,
-            "word check: " + str(self.player.word_check): self.change_word_check,
-            "endless_mode: " + str(self.player.endless_mode): self.change_endless_mode,
-            "main menue": self.main_menue 
+        self.createMenue(
+            title="OPTIONS",
+            options={
+            "wordlist: " + self.player.lang: self.changeLang,
+            "word check: " + str(self.player.word_check): self.changeWordCheck,
+            "endless_mode: " + str(self.player.endless_mode): self.changeEndlessMode,
+            "main menue": self.mainMenue
         })
 
 
-    def create_menue(self, options: dict, extraAction= lambda: None):
+    def createMenue(self, title: str, options: dict, extraAction= lambda: None):
         curses.noecho()
         curses.cbreak()
         k = 0
@@ -247,7 +250,8 @@ class WordleCli():
             height, width = self.stdscr.getmaxyx()
             start_y = int((height // 5))
             # draws WORDLE titel
-            drawTitle(stdscr=self.stdscr, text="WORDLE", y=start_y)
+            drawTitle(stdscr=self.stdscr, text=title, y=start_y)
+            self.stdscr.refresh()
             # draws menue options
             start_y = int((height // 3))
             # Dynamicly draw highlighting
@@ -260,8 +264,10 @@ class WordleCli():
             k = self.stdscr.getch()
 
     # The Main Menue
-    def main_menue(self):
-        self.create_menue(options={
+    def mainMenue(self):
+        self.createMenue(
+            title="WORDLE",
+            options={
             "start": self.startGame, 
             "options": self.options,
             "quit": self.exit_curses
@@ -270,7 +276,7 @@ class WordleCli():
 
     def run_init(self, stdscr):
         self.stdscr = stdscr
-        self.main_menue()
+        self.mainMenue()
         
     def run(self, player: Player):
         self.player = player
