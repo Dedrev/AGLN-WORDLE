@@ -1,11 +1,9 @@
-import sys,os
 import curses
-from curses.textpad import Textbox
 import pyfiglet
-import atexit
 from main import Player
 import DatabaseHandling
 from HelperFunctions import *
+import time
 
 def drawUTFTextCenter(stdscr, text, y, color_pair):
     """
@@ -217,14 +215,29 @@ class WordleCli():
             "endless_mode: " + str(self.player.endless_mode): self.changeEndlessMode,
             "main menue": self.mainMenue
         })
+    
+    def checkTerminalSize(self):
+        self.stdscr.nodelay(True)
+        while True:
+            height, width = self.stdscr.getmaxyx()
+            if width >= 78 and height >= 68:
+                break
 
+            self.stdscr.clear()
+            self.stdscr.addstr(0,0, f"Min 78x68 Terminal size required | aktuell: {width}x{height}")
+            self.stdscr.refresh()
+
+            while self.stdscr.getch() == curses.KEY_RESIZE:
+                curses.update_lines_cols()
+            time.sleep(0.05)
+        self.stdscr.nodelay(False)
 
     def createMenue(self, title: str, options: dict, extraAction= lambda: None):
         curses.noecho()
         curses.cbreak()
         k = 0
         cursor_y = 0
-
+        self.checkTerminalSize()
         # Clear and refresh the screen for a blank canvas
         self.stdscr.clear()
         self.stdscr.refresh()
@@ -258,7 +271,7 @@ class WordleCli():
             drawTitle(stdscr=self.stdscr, text=title, y=start_y)
             self.stdscr.refresh()
             # draws menue options
-            start_y = int((height // 3))
+            start_y = int((height // 3.5))
             # Dynamicly draw highlighting
             for i, text in enumerate(options.keys()):
                 start_y = drawUTFTextCenter(stdscr=self.stdscr, text=text, y=start_y, color_pair=curses.color_pair(3 if cursor_y == i  else 1))+ 2
