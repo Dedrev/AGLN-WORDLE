@@ -127,10 +127,11 @@ class WordleCli():
                 # checks if the word has the right amount of letters and checks, if the setting is set to true, if the word is in the db
                 # else it loops again
                 while (len(guessWord) != self.player.level 
-                       or not self.database.checkForEntry(guessWord, self.player.lang) if self.player.word_check else False):
+                       and not (self.database.checkForEntry(guessWord, self.player.lang) if self.player.word_check else False)):
                     
                     guessWord = self.stdscr.getstr().decode("utf-8").upper()
                     self.stdscr.clrtoeol()
+
                 colMapping = checkWord(guessWord=guessWord[:self.player.level], word=word)
                 # Maps ansii color codes to curses format
                 for i, mapping in enumerate(colMapping):
@@ -150,6 +151,9 @@ class WordleCli():
                     self.player.score = getScore(len(word), self.player.remainingAttempts)
                     self.stdscr.clear()
                     break
+
+               
+                
                 # checks if player lost
                 elif self.player.remainingAttempts <= 0:
                     # Writes Progress to Leaderboard
@@ -161,6 +165,8 @@ class WordleCli():
 
                 self.player.remainingAttempts -= 1
                 self.stdscr.refresh()
+
+
     # changes table lang to the other lang
     # TODO: Make it dynamicly so that new lists can be added.
     def change_lang(self):
