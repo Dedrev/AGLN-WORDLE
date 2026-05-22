@@ -63,11 +63,13 @@ class WordleCli():
         self.stdscr.addstr(1, 3, "Name", curses.color_pair(1))
         self.stdscr.addstr(1, 26, "Score", curses.color_pair(1))
         self.stdscr.addstr(1, 33, "Last Word", curses.color_pair(1))
-        for i, leader in enumerate(self.database.getLeaderboard()):
+        for i, leader in enumerate(self.database.getLeaderboard(nLeaders=self.player.leaderboard_len)):
             self.stdscr.addstr(i+2,0, str(i+1))
             self.stdscr.addstr(i+2, 3, leader[0])
             self.stdscr.addstr(i+2, 26, str(leader[2]))
             self.stdscr.addstr(i+2, 33, leader[1])
+
+        self.stdscr.addstr(self.player.leaderboard_len * 2 + 1, 0, "Your HighScore: " + str(self.player.score))
 
     def failedScreen(self):
         self.createMenue(
@@ -119,10 +121,11 @@ class WordleCli():
         while (True):
             line = 0
             word = self.database.getRandWordByLength(self.player.level, table_name=self.player.lang)
-
+            self.stdscr.addstr(20, 0, word)
             if word == None:
                 if self.player.endless_mode:
                     self.player.level = Player.level
+                    word = self.database.getRandWordByLength(self.player.level, table_name=self.player.lang)
                 else:
                     self.endScreen()
                 
@@ -163,7 +166,7 @@ class WordleCli():
                         self.stdscr.addstr(height-underside+line,i, guessWord[i], curses.color_pair(6))
                 line+=1
                 # checkes if the word was right and levels up the player
-                if guessWord == word:
+                if guessWord.upper() == word.upper():
                     self.player.level += 1
                     self.player.allAttemps += Player.remainingAttempts - self.player.remainingAttempts
                     self.player.remainingAttempts = Player.remainingAttempts

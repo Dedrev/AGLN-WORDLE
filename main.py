@@ -10,6 +10,7 @@ class Player:
     lang = db.GERMAN_TABLE 
     word_check = False
     endless_mode = False
+    leaderboard_len = 5
 
 if __name__ == "__main__":
     
